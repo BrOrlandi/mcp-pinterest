@@ -1,6 +1,6 @@
-// Pinterest image scraper using puppeteer-core
+// Pinterest image scraper using puppeteer
 import fs from 'fs';
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 
 // Default configuration constants
 const DEFAULT_SEARCH_LIMIT = 10;
@@ -10,14 +10,6 @@ class PinterestScraper {
   constructor() {
     this.baseUrl = 'https://www.pinterest.com';
     this.searchUrl = `${this.baseUrl}/search/pins/?q=`;
-    // Default Chrome paths for different platforms
-    this.chromePaths = {
-      mac: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      macAlt: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      linux: '/usr/bin/google-chrome',
-      win: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-      winAlt: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-    };
   }
 
   /**
@@ -42,7 +34,7 @@ class PinterestScraper {
       const url = `${this.searchUrl}${searchQuery}`;
       console.error('Search URL:', url);
       
-      // Launch browser - using system installed Chrome
+      // Launch browser - using puppeteer's bundled Chromium
       try {
         const options = {
           headless: headless ? 'new' : false,
@@ -54,16 +46,6 @@ class PinterestScraper {
             '--disable-gpu'
           ]
         };
-        
-        // Try to find Chrome executable
-        const platform = process.platform;
-        if (platform === 'darwin') {
-          options.executablePath = this.chromePaths.mac;
-        } else if (platform === 'linux') {
-          options.executablePath = this.chromePaths.linux;
-        } else if (platform === 'win32') {
-          options.executablePath = this.chromePaths.win;
-        }
         
         console.error('Launching browser with options:', JSON.stringify(options));
         browser = await puppeteer.launch(options);
